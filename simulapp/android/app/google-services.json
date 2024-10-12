@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "650312010960",
+    "project_id": "simulapp-92286",
+    "storage_bucket": "simulapp-92286.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:650312010960:android:15cd5f6be831578d23a2d5",
+        "android_client_info": {
+          "package_name": "com.simulapp.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhJ9wplQ5PMg8ptgKmZzqdAzXLYyhLbkw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
