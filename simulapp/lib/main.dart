@@ -7,7 +7,7 @@ import 'src/iu/register.dart'; // Pantalla de Registro
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase(); // Inicializa Firebase antes de arrancar la app
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: AuthCheck(), // Verifica el estado de autenticación
+      home: const AuthCheck(), // Verifica el estado de autenticación
     );
   }
 }
@@ -38,9 +38,9 @@ class AuthCheck extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.active) {
           User? user = snapshot.data;
           if (user == null) {
-            return LoginScreen(); // Si no hay usuario, muestra la pantalla de login
+            return const LoginScreen(); // Si no hay usuario, muestra la pantalla de login
           } else {
-            return RegisterScreen(); // Si hay usuario, muestra la pantalla de registro o la principal
+            return const RegisterScreen(); // Si hay usuario, muestra la pantalla de registro o la principal
           }
         } else {
           // Si el estado de conexión está cargando
