@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'register.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -32,34 +34,34 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'Email'),
             ),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: loginUser,
-              child: Text('Login'),
+              child: const Text('Login'),
             ),
-            Text(errorMessage, style: TextStyle(color: Colors.red)),
+            Text(errorMessage, style: const TextStyle(color: Colors.red)),
             TextButton(
               onPressed: () {
                 // Navegar a la pantalla de registro
                 Navigator.push(context, MaterialPageRoute(builder: (_) => RegisterScreen()));
               },
-              child: Text('Don\'t have an account? Sign up'),
+              child: const Text('Don\'t have an account? Sign up'),
             )
           ],
         ),
