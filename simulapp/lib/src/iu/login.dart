@@ -1,68 +1,83 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'register.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'register.dart';  // Importa la página de registro
+import 'examlist.dart';  // Importa la página de examlist
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-
+class LoginPage extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  String errorMessage = '';
+class _LoginPageState extends State<LoginPage> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   Future<void> loginUser() async {
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      // Iniciar sesión con Firebase Authentication
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
-      print('User logged in: ${userCredential.user!.email}');
-      // Navegar a la siguiente pantalla (por ejemplo, simulacros de exámenes)
+
+      // Obtener datos adicionales del usuario desde Firestore
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .get();
+
+      if (userDoc.exists) {
+        print("User data: ${userDoc.data()}");
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Login successful')));
+
+        // Redirigir a la página de lista de exámenes
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ExamenesScreen()),  // Cambia ExamList por ExamenesScreen
+        );
+      } else {
+        print("User not found in Firestore.");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('User not found in Firestore')));
+      }
     } catch (e) {
-      setState(() {
-        errorMessage = 'Error: $e';
-      });
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-      ),
+      appBar: AppBar(title: Text('Login')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(labelText: 'Email'),
             ),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: loginUser,
-              child: const Text('Login'),
+              child: Text('Login'),
             ),
-            Text(errorMessage, style: const TextStyle(color: Colors.red)),
             TextButton(
               onPressed: () {
-                // Navegar a la pantalla de registro
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterScreen()));
+                // Navegar a la página de registro
+                Navigator.push(context, 
+                  MaterialPageRoute(builder: (context) => RegisterPage()));
               },
-              child: const Text('Don\'t have an account? Sign up'),
-            )
+              child: Text('No account? Register here'),
+            ),
           ],
         ),
       ),
