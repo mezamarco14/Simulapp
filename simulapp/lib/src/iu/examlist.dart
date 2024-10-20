@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'prices.dart';
+import 'calendar.dart'; // Importa el archivo calendar.dart
 
 class AppColors {
   static const Color color1 = Color(0xFF377899); // Color 1
@@ -170,6 +171,7 @@ class _ExamenesScreenState extends State<ExamenesScreen> {
             Container(), // Placeholder para Inicio
             Container(), // Placeholder para Ubicación
             PricesPage(), // Navegar a PricesPage
+            CalendarPage(), // Nueva vista para Calendario
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
@@ -190,6 +192,10 @@ class _ExamenesScreenState extends State<ExamenesScreen> {
             BottomNavigationBarItem(
               icon: Icon(Icons.attach_money, color: AppColors.color2),
               label: 'Precios',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_today, color: AppColors.color2),
+              label: 'Calendario',
             ),
           ],
           currentIndex: _selectedIndex,
@@ -234,6 +240,51 @@ class _ExamenesScreenState extends State<ExamenesScreen> {
     );
   }
 }
+
+List<Examen> cambridgeExamenes = [
+  Examen(
+    nombre: 'C1 Advanced (CAE)',
+    descripcion: 'Examen avanzado de inglés.',
+    imagen: 'images/CAE.jpg',
+    fecha: '2024',
+  ),
+  Examen(
+    nombre: 'C2 Proficiency (CPE)',
+    descripcion: 'Examen de máximo nivel en inglés.',
+    imagen: 'images/CPE.jpg',
+    fecha: '2024',
+  ),
+];
+
+List<Examen> michiganExamenes = [
+  Examen(
+    nombre: 'ECCE',
+    descripcion: 'Examen de competencia en inglés.',
+    imagen: 'images/ECCE.jpg',
+    fecha: '2024',
+  ),
+  Examen(
+    nombre: 'ECPE',
+    descripcion: 'Examen de dominio en inglés.',
+    imagen: 'images/ECPE.jpg',
+    fecha: '2024',
+  ),
+];
+
+List<Examen> toeflExamenes = [
+  Examen(
+    nombre: 'TOEFL iBT',
+    descripcion: 'Examen por internet de inglés.',
+    imagen: 'images/IBT.jpg',
+    fecha: '2024',
+  ),
+  Examen(
+    nombre: 'TOEFL ITP',
+    descripcion: 'Examen en papel de inglés.',
+    imagen: 'images/ITP.jpg',
+    fecha: '2024',
+  ),
+];
 
 // Widget que muestra la lista de exámenes
 class ExamenesList extends StatelessWidget {
