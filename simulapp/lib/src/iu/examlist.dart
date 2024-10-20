@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'prices.dart';
 
 class AppColors {
   static const Color color1 = Color(0xFF377899); // Color 1
@@ -45,8 +46,8 @@ class ExamenesScreen extends StatefulWidget {
 }
 
 class _ExamenesScreenState extends State<ExamenesScreen> {
-  // TextEditingController para la barra de búsqueda
   TextEditingController _searchController = TextEditingController();
+  int _selectedIndex = 0; // Controlador de índice para la barra de navegación
 
   // Listas de exámenes para cada sección
   List<Examen> cambridgeExamenes = [
@@ -62,7 +63,6 @@ class _ExamenesScreenState extends State<ExamenesScreen> {
       imagen: 'images/CPE.jpg',
       fecha: '2024',
     ),
-    // Puedes agregar más exámenes aquí
   ];
 
   List<Examen> michiganExamenes = [
@@ -78,7 +78,6 @@ class _ExamenesScreenState extends State<ExamenesScreen> {
       imagen: 'images/ECPE.jpg',
       fecha: '2024',
     ),
-    // Puedes agregar más exámenes aquí
   ];
 
   List<Examen> toeflExamenes = [
@@ -94,7 +93,6 @@ class _ExamenesScreenState extends State<ExamenesScreen> {
       imagen: 'images/ITP.jpg',
       fecha: '2024',
     ),
-    // Puedes agregar más exámenes aquí
   ];
 
   // Listas filtradas
@@ -105,28 +103,23 @@ class _ExamenesScreenState extends State<ExamenesScreen> {
   @override
   void initState() {
     super.initState();
-    // Inicialmente, las listas filtradas son iguales a las listas originales
+    // Inicializar listas filtradas
     filteredCambridgeExamenes = cambridgeExamenes;
     filteredMichiganExamenes = michiganExamenes;
     filteredToeflExamenes = toeflExamenes;
-
-    // Añadimos un listener al controlador de búsqueda
     _searchController.addListener(_onSearchChanged);
   }
 
   @override
   void dispose() {
-    // Limpiamos el controlador al disponer el widget
     _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
     super.dispose();
   }
 
-  _onSearchChanged() {
-    // Cada vez que cambia el texto de búsqueda, actualizamos las listas filtradas
+  void _onSearchChanged() {
     setState(() {
       String query = _searchController.text.toLowerCase();
-
       filteredCambridgeExamenes = cambridgeExamenes.where((examen) {
         return examen.nombre.toLowerCase().contains(query) ||
             examen.descripcion.toLowerCase().contains(query);
@@ -144,6 +137,12 @@ class _ExamenesScreenState extends State<ExamenesScreen> {
     });
   }
 
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -151,81 +150,87 @@ class _ExamenesScreenState extends State<ExamenesScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Exámenes Internacionales'),
-          centerTitle: true, // Para centrar el título
-          backgroundColor: AppColors.color3, // Fondo celeste
-          bottom: const TabBar(
-            tabs: [
-              Tab(text: 'Cambridge'),
-              Tab(text: 'Michigan'),
-              Tab(text: 'Toefl'),
-            ],
-            indicatorColor: AppColors.color2, // Color del indicador de pestañas
-          ),
+          centerTitle: true,
+          backgroundColor: AppColors.color3,
+          bottom: _selectedIndex == 0
+              ? const TabBar(
+                  tabs: [
+                    Tab(text: 'Cambridge'),
+                    Tab(text: 'Michigan'),
+                    Tab(text: 'Toefl'),
+                  ],
+                  indicatorColor: AppColors.color2,
+                )
+              : null, // Solo mostrar TabBar en la pantalla de exámenes
         ),
-        body: Column(
+        body: IndexedStack(
+          index: _selectedIndex,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: 'Buscar',
-                  prefixIcon: const Icon(Icons.search,
-                      color: AppColors.color2), // Color del ícono de búsqueda
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                        color: AppColors.color2), // Color del borde
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  // Pestaña de Cambridge
-                  ExamenesList(examenes: filteredCambridgeExamenes),
-                  // Pestaña de Michigan
-                  ExamenesList(examenes: filteredMichiganExamenes),
-                  // Pestaña de Toefl
-                  ExamenesList(examenes: filteredToeflExamenes),
-                ],
-              ),
-            ),
+            _buildExamenesView(), // Vista de exámenes
+            Container(), // Placeholder para Inicio
+            Container(), // Placeholder para Ubicación
+            PricesPage(), // Navegar a PricesPage
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
-          backgroundColor:
-              AppColors.color3, // Color de fondo de la barra inferior
+          backgroundColor: AppColors.color3,
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.grid_view,
-                  color: AppColors.color2), // Ícono color2
+              icon: Icon(Icons.grid_view, color: AppColors.color2),
               label: 'Menú',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.home, color: AppColors.color2), // Ícono color2
+              icon: Icon(Icons.home, color: AppColors.color2),
               label: 'Inicio',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.location_pin,
-                  color: AppColors.color2), // Ícono color2
+              icon: Icon(Icons.location_pin, color: AppColors.color2),
               label: 'Ubicación',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.attach_money,
-                  color: AppColors.color2), // Ícono color2
+              icon: Icon(Icons.attach_money, color: AppColors.color2),
               label: 'Precios',
             ),
           ],
-          selectedItemColor: AppColors.color2, // Color del ítem seleccionado
-          unselectedItemColor:
-              AppColors.color1, // Color del ítem no seleccionado
-          showUnselectedLabels:
-              true, // Mostrar etiquetas de ítems no seleccionados
-          showSelectedLabels: true, // Mostrar etiquetas de ítems seleccionados
+          currentIndex: _selectedIndex,
+          selectedItemColor: AppColors.color2,
+          unselectedItemColor: AppColors.color1,
+          showUnselectedLabels: true,
+          showSelectedLabels: true,
+          onTap: _onItemTapped,
         ),
       ),
+    );
+  }
+
+  // Método que construye la vista de exámenes con TabBarView
+  Widget _buildExamenesView() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Buscar',
+              prefixIcon: const Icon(Icons.search, color: AppColors.color2),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: AppColors.color2),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: TabBarView(
+            children: [
+              ExamenesList(examenes: filteredCambridgeExamenes),
+              ExamenesList(examenes: filteredMichiganExamenes),
+              ExamenesList(examenes: filteredToeflExamenes),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
