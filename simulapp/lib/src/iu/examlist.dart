@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'maps.dart'; // Asegúrate de importar tu archivo maps.dart
 import 'prices.dart';
 import 'calendar.dart'; // Importa el archivo calendar.dart
+import 'exam.dart'; // Importa la pantalla de detalles
+
 
 class AppColors {
   static const Color color1 = Color(0xFF377899); // Color 1
@@ -144,7 +147,7 @@ class _ExamenesScreenState extends State<ExamenesScreen> {
     });
   }
 
-  @override
+    @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3, // Número de pestañas (Cambridge, Michigan, Toefl)
@@ -169,7 +172,7 @@ class _ExamenesScreenState extends State<ExamenesScreen> {
           children: [
             _buildExamenesView(), // Vista de exámenes
             Container(), // Placeholder para Inicio
-            Container(), // Placeholder para Ubicación
+            MapScreen(), // Aquí se muestra la pantalla del mapa (ubicación)
             PricesPage(), // Navegar a PricesPage
             CalendarPage(), // Nueva vista para Calendario
           ],
@@ -287,6 +290,7 @@ List<Examen> toeflExamenes = [
 ];
 
 // Widget que muestra la lista de exámenes
+// Widget que muestra la lista de exámenes
 class ExamenesList extends StatelessWidget {
   final List<Examen> examenes;
 
@@ -329,9 +333,24 @@ class ExamenesList extends StatelessWidget {
             ),
             trailing: const Icon(Icons.arrow_forward_ios,
                 color: AppColors.white), // Color del icono
+            onTap: () {
+              // Navegar a la pantalla de detalles usando ExamenDetalleScreen de exam.dart
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ExamenDetalleScreen(
+                    nombre: examen.nombre,          // Pasar el nombre del examen
+                    descripcion: examen.descripcion, // Pasar la descripción del examen
+                    imagen: examen.imagen,          // Pasar la imagen del examen
+                  ),
+                ),
+              );
+            },
           ),
         );
       },
     );
   }
 }
+
+
